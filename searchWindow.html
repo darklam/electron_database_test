@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Search image in database</title>
+</head>
+<body>
+    <form>
+        <div>
+            <label>Search for image description: </label>
+            <input type="text" id="description" autofocus>
+        </div>
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="foundImage">
+    </div>
+
+    <script>
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+        const form = document.querySelector('form');
+        form.addEventListener('submit', submitForm);
+
+        // Sending the image description to tha main to search in the database
+        function submitForm(e){
+            e.preventDefault();
+            const desc = document.querySelector('#description').value;
+            ipcRenderer.send('image:search', desc);
+        }
+
+        // Displaying the image that was found in the database
+        ipcRenderer.on('image:found', function(e, image){
+            // image = new Blob(image);
+            // console.log(image);
+            image = atob(image);
+            imageField = document.createElement('img');
+            imageField.src = URL.createObjectURL(image);
+            var div = document.querySelector('#foundImage');
+            document.body.appendChild(imageField);
+        });
+    </script>
+</body>
+</html>

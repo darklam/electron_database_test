@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add new image to database</title>
+</head>
+<body>
+    <form>
+        <div>
+            <label>Enter image description</label>
+            <input type="text" id="description" autofocus>
+        </div>
+        <div>
+            <label>Select image</label>
+            <input type="file" id="fileSelect">
+        </div>
+        <button type="submit">Add image</button>
+    </form>
+
+    <script>
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', submitForm);
+
+        function submitForm(e){
+            e.preventDefault();
+            const dsc = document.querySelector('#description').value;
+            const file = document.querySelector('#fileSelect').files[0].path;
+            var toSend = {
+                description: dsc,
+                file: file
+            }
+            ipcRenderer.send('image:add', toSend);
+        }
+    </script>
+</body>
+</html>
